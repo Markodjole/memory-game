@@ -1,0 +1,72 @@
+body {
+  color:white;
+  background-color: rgb(28, 139, 176);
+}
+.welcome{
+  width:200px;
+  margin:auto;
+  margin-top:400px;
+  padding:100px;
+  background-color: rgb(79, 190, 228);
+}
+.startButton {
+  color:white;
+  padding:10px;
+  background-color: rgb(255, 102, 102);
+  margin-top:20px;
+  border-radius: 7px;
+}
+.startButton:hover {
+  color:white;
+  padding:10px;
+  background-color: rgb(255, 128, 128);
+  margin-top:20px;
+  border-radius: 7px;
+}
+.shafleCardsButton{
+  width:150px;
+  color:white;
+  padding:10px;
+  background-color: rgb(79, 190, 228);
+  margin:20px;
+  border-radius: 7px;
+}
+
+
+.flex-container {
+  margin:auto;
+  margin-top:50px;
+  width: 480px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(79, 190, 228);
+  justify-content: center;
+  align-items: center;
+  border-radius: 7px;
+}
+
+.flex-container > button {
+  background-color:white;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+  border-radius: 7px;
+}
+
+.totalClicks{
+  width: 150px;
+  background-color: rgb(79, 190, 228);
+  margin:auto;
+  margin-top:200px;
+  padding:10px;
+  border-radius: 7px;
+}
+.wrapperForGame{
+  width:70%;
+  margin:auto;
+  text-align: center;
+  padding: 30px;
+  background-color: rgb(28, 139, 176);
+}
