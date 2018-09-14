@@ -7,8 +7,10 @@ class App extends Component {
     super(props);
     this.state = {
       playerName: "",
-      openCardsCounter: 0,
       playerNameInInput:false,
+      time:0,
+      timeResult:  0,
+      running:false,
       clicks:0,
       totalClicks: 0,
       firstClickedCard: null,
@@ -19,32 +21,49 @@ class App extends Component {
       gamePage: false,
 
       cards: [
-        { val: 10, opened: false, id: 1, pair: 1 },
-        { val: 10, opened: false, id: 2, pair: 1 },
-        { val: 20, opened: false, id: 3, pair: 2 },
-        { val: 20, opened: false, id: 4, pair: 2 },
-        { val: 30, opened: false, id: 5, pair: 3 },
-        { val: 30, opened: false, id: 6, pair: 3 },
-        { val: 40, opened: false, id: 7, pair: 4 },
-        { val: 40, opened: false, id: 8, pair: 4 },
-        { val: 50, opened: false, id: 9, pair: 5 },
-        { val: 50, opened: false, id: 10, pair: 5 },
-        { val: 60, opened: false, id: 11, pair: 6 },
-        { val: 60, opened: false, id: 12, pair: 6 },
-        { val: 70, opened: false, id: 13, pair: 7 },
-        { val: 70, opened: false, id: 14, pair: 7 },
-        { val: 80, opened: false, id: 15, pair: 8 },
-        { val: 80, opened: false, id: 16, pair: 8 }
+        // { val: 10, opened: false, id: 1, pair: 1 },
+        // { val: 10, opened: false, id: 2, pair: 1 },
+        // { val: 20, opened: false, id: 3, pair: 2 },
+        // { val: 20, opened: false, id: 4, pair: 2 },
+        // { val: 30, opened: false, id: 5, pair: 3 },
+        // { val: 30, opened: false, id: 6, pair: 3 },
+        // { val: 40, opened: false, id: 7, pair: 4 },
+        // { val: 40, opened: false, id: 8, pair: 4 },
+        // { val: 50, opened: false, id: 9, pair: 5 },
+        // { val: 50, opened: false, id: 10, pair: 5 },
+        // { val: 60, opened: false, id: 11, pair: 6 },
+        // { val: 60, opened: false, id: 12, pair: 6 },
+        // { val: 70, opened: false, id: 13, pair: 7 },
+        // { val: 70, opened: false, id: 14, pair: 7 },
+        // { val: 80, opened: false, id: 15, pair: 8 },
+        // { val: 80, opened: false, id: 16, pair: 8 }
       ]
     };
+    this.intervalId = 0;
+  }
+
+  chooseGrid = (n) => {
+    n = n*n;
+   let cards = [];
+   let obj={ val: 10, opened: false, id: 1, pair: 1 }
+
+    for(let i=1;i<=n; i++){
+      cards.push(obj);
+    }
+    this.setState({cards:cards});
   }
 
 
   shafleCards = () => {
+    this.clearStopwatch();
     let newCards  = this.state.cards.map((card)=> Object.assign({}, card, { opened: false }));
     newCards.sort((a,b)=> 0.5 - Math.random());
     
-    this.setState({cards: newCards});
+    this.setState({
+      cards: newCards,
+      totalClicks: 0,
+      timeResult: 0
+    });
   }
 
   handleStartGameClick = () => {
@@ -58,11 +77,14 @@ class App extends Component {
   };
 
   goToLogPage = () => {
+    this.clearStopwatch();
     this.setState({
       playerName:'',
       playerNameInInput:false,
       logPage:true,
-      gamePage:false
+      gamePage:false,
+      totalClicks:0,
+      timeResult: 0
     })
   }
 
@@ -72,17 +94,47 @@ class App extends Component {
   };
 
   isGameFinished() {
-    return this.state.cards.find(card => !card.opened) ? false : true;
+    if(this.state.cards.find(card => !card.opened)){
+      return false;
+    }
+    return true;
+  }
+  
+  isThisLastCard() {
+    let ar = this.state.cards.filter((card)=> !card.opened);
+    if(ar.length === 1) {
+      return true;
+    } else{
+      return false;
+    }
+  }
+
+  runStopwatch = () => {
+      this.intervalId = setInterval(() => {
+        this.setState({
+          time: this.state.time + 1,
+        })
+      }, 1000)
+    
+    this.setState(state => ({running: !state.running}))
+  }
+
+  clearStopwatch = () => {
+   let timeRes = this.state.time;
+    this.setState({time: 0, running:false, timeResult: timeRes});
+    clearInterval(this.intervalId)
+    
   }
 
 
   ///////////////////////////// handle card click ////////////////////////////////////////////////////////////////
 
   handleCardClick = clickedCard => {
-
     const { firstClickedCard, totalClicks, secondClickedCard } = this.state;
 
-  
+  totalClicks === 0 ? this.runStopwatch() : null;
+  this.isThisLastCard() ? this.clearStopwatch() : null ;
+
     // first click logic
     if (totalClicks % 2 === 1) {
      
@@ -168,17 +220,18 @@ class App extends Component {
     
 
   
-  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////// render //////////////////////////////////////////////////////////////
 
   render() {
     let cards = this.state.cards;
+    
 
     return (
       <div>
         {/* log page ///////////////////////////////////////////////// */}
         {this.state.logPage ? (
           <div className="welcome">
-            <p>WELCOME TO MEMORY CARD GAME</p>
+            <p>Welcome to memory game</p>
             <input
               onChange={this.playerNameInInput}
               placeholder="Player name"
@@ -192,17 +245,31 @@ class App extends Component {
           </div>
         ) : null}
 
-{/* game page ///////////////////////////////////////////////////////////// */}
+{/*/////////////////////////////// game page ///////////////////////////////////////////////////////////// */}
         {this.state.gamePage ? (
-          <div>
-            <div className="wrapperForGame">
-            <div className="playerName">
-            <h3>Welcome to memory card game</h3>
+          <div class="wrapperForGamePage">
+            <div className="headerClass">
+            <h3>MEMORY CARD GAME</h3>
             <p>Player name: {this.state.playerName.toUpperCase()}</p>
+           
+           {/* //////////////////// choose grid ///////////// */}
+
+            <div className="chooseGrid">
+            <span>Choose grid type: </span>
+            <button onClick={()=> this.chooseGrid(2)} className="chooseGridButton">3 x 3</button>
+            <button onClick={()=> this.chooseGrid(4)} className="chooseGridButton">4 x 4</button>
+            <button onClick={()=> this.chooseGrid(6)} className="chooseGridButton">5 x 5</button>
+            </div>
+           
+            
+            </div>
+{/* ////////////////////////////// just game ///////////////////////////////////// */}
+            <div className="wrapperForGame">
             <div className="totalClicks">
-              Total clicks: {this.state.totalClicks}
+              <p>Total clicks: {this.state.totalClicks}</p>
+              <p>Time: {this.state.time < 1 ? this.state.timeResult : this.state.time} s</p>
             </div>
-            </div>
+            
               <div className="flex-container">
                 {cards.map(card => {
                   return (
@@ -219,21 +286,28 @@ class App extends Component {
                   );
                 })}
               </div>
-              <button className="shafleCardsButton" onClick={this.goToLogPage}>Go back</button>
-              <button className="shafleCardsButton" onClick={this.shafleCards}>Start new game</button>
+              <button className="shafleCardsButton" onClick={this.shafleCards}
+              >Start new game</button>
               {this.isGameFinished() ? (
-                <h1 className="gameOver">Game over, well done!</h1>
+                <p className="gameOver">Game over, well done! You did it in {this.state.totalClicks} clicks !</p>
               ) : null}
+              </div>
+{/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
+                <button className="goBackButton" onClick={this.goToLogPage}>Go back</button>
+              
               
               
             </div>
-          </div>
+          
         ) : null}
       </div>
     );
   }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////// Card component //////////////////////////////////////////////////////
 function Card(props) {
   return (
     <button 

@@ -5,7 +5,7 @@ body {
 .welcome{
   width:200px;
   margin:auto;
-  margin-top:400px;
+  margin-top:350px;
   padding:100px;
   background-color: rgb(79, 190, 228);
 }
@@ -24,11 +24,20 @@ body {
   border-radius: 7px;
 }
 .shafleCardsButton{
+  width:350px;
+  color:white;
+  padding:10px;
+  background-color: rgb(79, 190, 228);
+  margin:7px;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+.goBackButton{
   width:150px;
   color:white;
   padding:10px;
   background-color: rgb(79, 190, 228);
-  margin:20px;
+  margin:10px;
   border-radius: 7px;
 }
 
@@ -59,14 +68,32 @@ body {
   width: 150px;
   background-color: rgb(79, 190, 228);
   margin:auto;
-  margin-top:200px;
   padding:10px;
   border-radius: 7px;
+}
+.wrapperForGamePage{
+  width:70%;
+  margin:auto;
+  margin-top:10px;
+  text-align: center;
+  padding: 30px;
+  background-color: rgb(28, 139, 176);
+  border: 1px solid white;
 }
 .wrapperForGame{
   width:70%;
   margin:auto;
+  margin-top: 10px;
   text-align: center;
   padding: 30px;
   background-color: rgb(28, 139, 176);
+}
+.chooseGridButton {
+  width:100px;
+  color:white;
+  padding:10px;
+  background-color: rgb(28, 139, 176);
+  margin:4px;
+  margin-top:20px;
+  border-radius: 7px;
 }
