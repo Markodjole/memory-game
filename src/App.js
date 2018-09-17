@@ -45,11 +45,11 @@ class App extends Component {
     this.intervalId = 0;
   }
 
- 
+
 
   /////////////////////// grid content making function //////////////////////////////////////////////
   chooseGrid = (n) => {
-    
+
     let ar = [];
     let newObj = { val: 0, opened: false, id: 0, pair: 0 };;
     for (let i = 1; i <= n * n; i++) {
@@ -69,17 +69,17 @@ class App extends Component {
     });
     let gridCol = () => {
       let gridC = '';
-      for(let i=0; i<n; i++){
-        gridC+="auto ";
+      for (let i = 0; i < n; i++) {
+        gridC += "auto ";
       }
       console.log(gridC)
       return gridC;
     }
     console.log(gridCol());
-    this.setState({ cards: newAr, gridColumns: gridCol(), shownGame: true }, ()=> this.shafleCards());
-    
+    this.setState({ cards: newAr, gridColumns: gridCol(), shownGame: true }, () => this.shafleCards());
+
   }
-//////////////////////////////// shafle cards ////////////////////////////////////////////////////////////
+  //////////////////////////////// shafle cards ////////////////////////////////////////////////////////////
   shafleCards = () => {
     this.clearStopwatch();
     let newCards = this.state.cards.map((card) => Object.assign({}, card, { opened: false }));
@@ -152,9 +152,12 @@ class App extends Component {
 
   }
   showScoreList = () => {
-var scoresFromLocal = localStorage.getItem("scores");
-
-console.log(scoresFromLocal);
+    var ar = [];
+    var scoresFromLocal = localStorage.getItem("scores");
+    scoresFromLocal = scoresFromLocal ? scoresFromLocal.split(',') : [];
+    ar.push(scoresFromLocal);
+    this.setState({ scoreList: ar });
+    console.log(ar);
   }
 
 
@@ -166,22 +169,37 @@ console.log(scoresFromLocal);
     totalClicks === 0 ? this.runStopwatch() : null;
 
     /////// if its last card ///////
-    if(this.isThisLastCard()){
+    if (this.isThisLastCard()) {
       this.clearStopwatch();
 
-      // Retrieve the object from storage to add a new score
-      var retrievedObject = localStorage.getItem("scores");
-      console.log(retrievedObject)
-      var scores = JSON.parse(retrievedObject);
-      console.log(scores)
 
-      // add a new score
-      var newScore = {
-        "name":        this.state.playerName,
-        "seconds":         this.state.time
-      };
-      scores.push(newScore);
-      localStorage.setItem("scores", JSON.stringify(scores));
+      //////////////// from https://gomakethings.com/how-to-update-localstorage-with-vanilla-javascript/ ////////////////////////////////
+      // Get the existing data
+      var existing = localStorage.getItem('scores');
+
+      // If no existing data, create an array
+      // Otherwise, convert the localStorage string to an array
+
+      existing = existing ? existing.split(',') : [];
+      existing.push(this.state.playerName, this.state.time);
+
+
+      // Save back to localStorage
+      localStorage.setItem('scores', existing.toString());
+
+
+      // // Get the existing data
+      // var existing = localStorage.getItem('scores');
+
+      // // If no existing data, create an array
+      // // Otherwise, convert the localStorage string to an array
+      // existing = existing ? JSON.parse(existing) : {};
+
+      // // Add new data to localStorage Array
+      // existing[this.state.playerName] = this.state.time;
+
+      // // Save back to localStorage
+      // localStorage.setItem('scores', JSON.stringify(existing));
     }
 
     // first click logic
@@ -273,6 +291,10 @@ console.log(scoresFromLocal);
 
   render() {
     let cards = this.state.cards;
+    let scoresFromRender = [];
+    for (var i in this.state.scoreList) {
+      scoresFromRender.push({ i: this.state.scoreList[i] })
+    }
 
 
     return (
@@ -313,51 +335,57 @@ console.log(scoresFromLocal);
 
             </div>
             {/* ////////////////////////////// just game ///////////////////////////////////// */}
-            
+
             {/* {this.state.scoreList.map((score)=>{
             return <div> <span>{score.key}</span><span>{score.sec}</span> </div> })
             } */}
-            
-            <div>{this.state.scoreList}</div>
+
+
+            <ul >
+              {/* {scoresFromRender.map((item) => {
+                return <li >{item}</li>
+              })} */}
+
+            </ul>
             <button onClick={this.showScoreList}>scores</button>
 
-            {this.state.shownGame ? 
+            {this.state.shownGame ?
 
-            <div className="wrapperForGame">
-            <div className="totalClicks">
-              <p>Total clicks: {this.state.totalClicks}</p>
-              <p>Time: {this.state.time < 1 ? this.state.timeResult : this.state.time} s</p>
-            </div>
+              <div className="wrapperForGame">
+                <div className="totalClicks">
+                  <p>Total clicks: {this.state.totalClicks}</p>
+                  <p>Time: {this.state.time < 1 ? this.state.timeResult : this.state.time} s</p>
+                </div>
 
 
-            
-            <div className="grid-container"
-             style={{ gridTemplateColumns : this.state.gridColumns }}
-             >
-              {cards.map(card => {
-                return (
-                  <Card
-                    val={card.val}
-                    key={card.id}
-                    id={card.id}
-                    onCardClick={this.handleCardClick}
-                    opened={card.opened}
-                    totalClicks={this.totalClicks}
-                    obj={card}
-                    finishedGame={this.state.finishedGame}
-                  />
-                );
-              })}
-            </div>
-            <div><button  className="shafleCardsButton" onClick={this.shafleCards}
-            >Start new game</button></div>
-            {this.isGameFinished() ? (
-              <p className="gameOver">Game over, well done! You did it in {this.state.totalClicks} clicks !</p>
-            ) : null}
-          </div>
-          : null
-          }
-            
+
+                <div className="grid-container"
+                  style={{ gridTemplateColumns: this.state.gridColumns }}
+                >
+                  {cards.map(card => {
+                    return (
+                      <Card
+                        val={card.val}
+                        key={card.id}
+                        id={card.id}
+                        onCardClick={this.handleCardClick}
+                        opened={card.opened}
+                        totalClicks={this.totalClicks}
+                        obj={card}
+                        finishedGame={this.state.finishedGame}
+                      />
+                    );
+                  })}
+                </div>
+                <div><button className="shafleCardsButton" onClick={this.shafleCards}
+                >Start new game</button></div>
+                {this.isGameFinished() ? (
+                  <p className="gameOver">Game over, well done! You did it in {this.state.totalClicks} clicks !</p>
+                ) : null}
+              </div>
+              : null
+            }
+
             {/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
             <button className="goBackButton" onClick={this.goToLogPage}>Go back</button>
