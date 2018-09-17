@@ -19,6 +19,9 @@ class App extends Component {
       finishedGame: false,
       logPage: true,
       gamePage: false,
+      gridColumns: '',
+      shownGame: false,
+      scoreList: [],
 
       cards: [
         // { val: 10, opened: false, id: 1, pair: 1 },
@@ -42,56 +45,41 @@ class App extends Component {
     this.intervalId = 0;
   }
 
-  // chooseGrid = (n) => {
-  //   n = n*n;
-  //  let cards = [];
-  //  let obj={ val: 10, opened: false, id: 1, pair: 1 }
+ 
 
-  //   for(let i=1;i<=n; i++){
-  //     cards.push(obj);
-  //   }
-  //   this.setState({cards:cards});
-  // }
-
-  // const cards = this.state.cards.map(card => {
-  //   if (card.id === firstClickedCard.id || card.id === secondClickedCard.id) {
-  //     return Object.assign({}, card, { opened: false })
-  //   }
-
-  //   if (card.id === clickedCard.id) {
-  //     return Object.assign({}, card, { opened: true })
-  //   }
-
-  //   return card;
-  // })
-
-  ///////////////////////////////////////
+  /////////////////////// grid content making function //////////////////////////////////////////////
   chooseGrid = (n) => {
+    
     let ar = [];
     let newObj = { val: 0, opened: false, id: 0, pair: 0 };;
     for (let i = 1; i <= n * n; i++) {
       ar.push({ val: 0, opened: false, id: 0, pair: 0 });
     };
-    console.log(ar);
     let newAr = ar.map((card, ind) => {
 
       if (ind % 2 === 0) {
         if (ind == 0) { ind = 1 };
         newObj = { val: newObj.val + 10, opened: false, id: newObj.id + 1, pair: newObj.pair + 1 };
-        console.log(newObj);
         return Object.assign({}, newObj);
       } else {
-        newObj = { val: newObj.val, opened: false, id: newObj.id + 1, pair: newObj.pair };
-        console.log(newObj);
+        newObj.id = newObj.id + 1;
         return Object.assign({}, newObj);
       }
 
     });
-    console.log(newAr);
-    this.setState({ cards: newAr })
-
+    let gridCol = () => {
+      let gridC = '';
+      for(let i=0; i<n; i++){
+        gridC+="auto ";
+      }
+      console.log(gridC)
+      return gridC;
+    }
+    console.log(gridCol());
+    this.setState({ cards: newAr, gridColumns: gridCol(), shownGame: true }, ()=> this.shafleCards());
+    
   }
-
+//////////////////////////////// shafle cards ////////////////////////////////////////////////////////////
   shafleCards = () => {
     this.clearStopwatch();
     let newCards = this.state.cards.map((card) => Object.assign({}, card, { opened: false }));
@@ -163,15 +151,38 @@ class App extends Component {
     clearInterval(this.intervalId)
 
   }
+  showScoreList = () => {
+var scoresFromLocal = localStorage.getItem("scores");
+
+console.log(scoresFromLocal);
+  }
 
 
-  ///////////////////////////// handle card click ////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////// handle card click ////////////////////////////////////////////////////////////////
 
   handleCardClick = clickedCard => {
     const { firstClickedCard, totalClicks, secondClickedCard } = this.state;
 
     totalClicks === 0 ? this.runStopwatch() : null;
-    this.isThisLastCard() ? this.clearStopwatch() : null;
+
+    /////// if its last card ///////
+    if(this.isThisLastCard()){
+      this.clearStopwatch();
+
+      // Retrieve the object from storage to add a new score
+      var retrievedObject = localStorage.getItem("scores");
+      console.log(retrievedObject)
+      var scores = JSON.parse(retrievedObject);
+      console.log(scores)
+
+      // add a new score
+      var newScore = {
+        "name":        this.state.playerName,
+        "seconds":         this.state.time
+      };
+      scores.push(newScore);
+      localStorage.setItem("scores", JSON.stringify(scores));
+    }
 
     // first click logic
     if (totalClicks % 2 === 1) {
@@ -266,7 +277,7 @@ class App extends Component {
 
     return (
       <div>
-        {/* log page ///////////////////////////////////////////////// */}
+        {/* //////////////////////////  log page ///////////////////////////////////////////////// */}
         {this.state.logPage ? (
           <div className="welcome">
             <p>Welcome to memory game</p>
@@ -294,42 +305,59 @@ class App extends Component {
 
               <div className="chooseGrid">
                 <span>Choose grid type: </span>
-                <button onClick={() => this.chooseGrid(2)} className="chooseGridButton">3 x 3</button>
+                <button onClick={() => this.chooseGrid(2)} className="chooseGridButton">2 x 2</button>
                 <button onClick={() => this.chooseGrid(4)} className="chooseGridButton">4 x 4</button>
-                <button onClick={() => this.chooseGrid(6)} className="chooseGridButton">5 x 5</button>
+                <button onClick={() => this.chooseGrid(6)} className="chooseGridButton">6 x 6</button>
               </div>
 
 
             </div>
             {/* ////////////////////////////// just game ///////////////////////////////////// */}
-            <div className="wrapperForGame">
-              <div className="totalClicks">
-                <p>Total clicks: {this.state.totalClicks}</p>
-                <p>Time: {this.state.time < 1 ? this.state.timeResult : this.state.time} s</p>
-              </div>
+            
+            {/* {this.state.scoreList.map((score)=>{
+            return <div> <span>{score.key}</span><span>{score.sec}</span> </div> })
+            } */}
+            
+            <div>{this.state.scoreList}</div>
+            <button onClick={this.showScoreList}>scores</button>
 
-              <div className="flex-container">
-                {cards.map(card => {
-                  return (
-                    <Card
-                      val={card.val}
-                      key={card.id}
-                      id={card.id}
-                      onCardClick={this.handleCardClick}
-                      opened={card.opened}
-                      totalClicks={this.totalClicks}
-                      obj={card}
-                      finishedGame={this.state.finishedGame}
-                    />
-                  );
-                })}
-              </div>
-              <button className="shafleCardsButton" onClick={this.shafleCards}
-              >Start new game</button>
-              {this.isGameFinished() ? (
-                <p className="gameOver">Game over, well done! You did it in {this.state.totalClicks} clicks !</p>
-              ) : null}
+            {this.state.shownGame ? 
+
+            <div className="wrapperForGame">
+            <div className="totalClicks">
+              <p>Total clicks: {this.state.totalClicks}</p>
+              <p>Time: {this.state.time < 1 ? this.state.timeResult : this.state.time} s</p>
             </div>
+
+
+            
+            <div className="grid-container"
+             style={{ gridTemplateColumns : this.state.gridColumns }}
+             >
+              {cards.map(card => {
+                return (
+                  <Card
+                    val={card.val}
+                    key={card.id}
+                    id={card.id}
+                    onCardClick={this.handleCardClick}
+                    opened={card.opened}
+                    totalClicks={this.totalClicks}
+                    obj={card}
+                    finishedGame={this.state.finishedGame}
+                  />
+                );
+              })}
+            </div>
+            <div><button  className="shafleCardsButton" onClick={this.shafleCards}
+            >Start new game</button></div>
+            {this.isGameFinished() ? (
+              <p className="gameOver">Game over, well done! You did it in {this.state.totalClicks} clicks !</p>
+            ) : null}
+          </div>
+          : null
+          }
+            
             {/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
             <button className="goBackButton" onClick={this.goToLogPage}>Go back</button>
@@ -349,7 +377,7 @@ class App extends Component {
 function Card(props) {
   return (
     <button
-      className="cardButton"
+      className="grid-item"
       disabled={props.opened}
       style={{ backgroundColor: props.opened ? "rgb(0, 204, 153)" : "rgb(255, 102, 102)", pointerEvents: null }}
       onClick={() => props.onCardClick(props.obj)}

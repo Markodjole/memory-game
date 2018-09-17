@@ -24,7 +24,7 @@ body {
   border-radius: 7px;
 }
 .shafleCardsButton{
-  width:350px;
+  width:150px;
   color:white;
   padding:10px;
   background-color: rgb(79, 190, 228);
@@ -40,9 +40,24 @@ body {
   margin:10px;
   border-radius: 7px;
 }
+.grid-container {
+  display: inline-grid;
+  background-color: rgb(79, 190, 228);
+  padding: 10px;
+  grid-gap: 5px;
+  margin-top: 7px;
+  border-radius: 7px;
+}
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  border-radius: 7px;
+}
 
-
-.flex-container {
+/* .flex-container {
   margin:auto;
   margin-top:50px;
   width: 480px;
@@ -62,17 +77,17 @@ body {
   line-height: 75px;
   font-size: 30px;
   border-radius: 7px;
-}
+} */
 
 .totalClicks{
   width: 150px;
   background-color: rgb(79, 190, 228);
   margin:auto;
-  padding:10px;
+  padding:2px;
   border-radius: 7px;
 }
 .wrapperForGamePage{
-  width:70%;
+  width:90%;
   margin:auto;
   margin-top:10px;
   text-align: center;
@@ -85,7 +100,7 @@ body {
   margin:auto;
   margin-top: 10px;
   text-align: center;
-  padding: 30px;
+  padding: 10px;
   background-color: rgb(28, 139, 176);
 }
 .chooseGridButton {
