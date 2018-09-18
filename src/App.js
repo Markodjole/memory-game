@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 // import logo from './logo.svg';
 import "./App.css";
+import Card from './components/Card';
+import Scores from './components/Scores';
+import ChooseGrid from './components/ChooseGrid';
 
 class App extends Component {
   constructor(props) {
@@ -21,30 +24,15 @@ class App extends Component {
       gamePage: false,
       gridColumns: '',
       shownGame: false,
+      showScoreList: false,
       scoreList: [],
 
       cards: [
         // { val: 10, opened: false, id: 1, pair: 1 },
-        // { val: 10, opened: false, id: 2, pair: 1 },
-        // { val: 20, opened: false, id: 3, pair: 2 },
-        // { val: 20, opened: false, id: 4, pair: 2 },
-        // { val: 30, opened: false, id: 5, pair: 3 },
-        // { val: 30, opened: false, id: 6, pair: 3 },
-        // { val: 40, opened: false, id: 7, pair: 4 },
-        // { val: 40, opened: false, id: 8, pair: 4 },
-        // { val: 50, opened: false, id: 9, pair: 5 },
-        // { val: 50, opened: false, id: 10, pair: 5 },
-        // { val: 60, opened: false, id: 11, pair: 6 },
-        // { val: 60, opened: false, id: 12, pair: 6 },
-        // { val: 70, opened: false, id: 13, pair: 7 },
-        // { val: 70, opened: false, id: 14, pair: 7 },
-        // { val: 80, opened: false, id: 15, pair: 8 },
-        // { val: 80, opened: false, id: 16, pair: 8 }
       ]
     };
     this.intervalId = 0;
   }
-
 
 
   /////////////////////// grid content making function //////////////////////////////////////////////
@@ -151,14 +139,10 @@ class App extends Component {
     clearInterval(this.intervalId)
 
   }
-  showScoreList = () => {
-    var ar = [];
-    var scoresFromLocal = localStorage.getItem("scores");
-    scoresFromLocal = scoresFromLocal ? scoresFromLocal.split(',') : [];
-    ar.push(scoresFromLocal);
-    this.setState({ scoreList: ar });
-    console.log(ar);
-  }
+
+  showScore = (scores) => this.setState({ scoreList: scores, showScoreList: !this.state.showScoreList, shownGame: false});
+
+  
 
 
   //////////////////////////////////////////// handle card click ////////////////////////////////////////////////////////////////
@@ -173,13 +157,10 @@ class App extends Component {
       this.clearStopwatch();
 
 
-      //////////////// from https://gomakethings.com/how-to-update-localstorage-with-vanilla-javascript/ ////////////////////////////////
       // Get the existing data
       var existing = localStorage.getItem('scores');
 
       // If no existing data, create an array
-      // Otherwise, convert the localStorage string to an array
-
       existing = existing ? existing.split(',') : [];
       existing.push(this.state.playerName, this.state.time);
 
@@ -187,19 +168,6 @@ class App extends Component {
       // Save back to localStorage
       localStorage.setItem('scores', existing.toString());
 
-
-      // // Get the existing data
-      // var existing = localStorage.getItem('scores');
-
-      // // If no existing data, create an array
-      // // Otherwise, convert the localStorage string to an array
-      // existing = existing ? JSON.parse(existing) : {};
-
-      // // Add new data to localStorage Array
-      // existing[this.state.playerName] = this.state.time;
-
-      // // Save back to localStorage
-      // localStorage.setItem('scores', JSON.stringify(existing));
     }
 
     // first click logic
@@ -291,19 +259,14 @@ class App extends Component {
 
   render() {
     let cards = this.state.cards;
-    let scoresFromRender = [];
-    for (var i in this.state.scoreList) {
-      scoresFromRender.push({ i: this.state.scoreList[i] })
-    }
-
-
+  
     return (
       <div>
         {/* //////////////////////////  log page ///////////////////////////////////////////////// */}
         {this.state.logPage ? (
           <div className="welcome">
             <p>Welcome to memory game</p>
-            <input
+            <input className="logInput"
               onChange={this.playerNameInInput}
               placeholder="Player name"
               type="text"
@@ -325,30 +288,31 @@ class App extends Component {
 
               {/* //////////////////// choose grid ///////////// */}
 
-              <div className="chooseGrid">
+              <ChooseGrid
+              onChooseGrid = {this.chooseGrid}
+              />
+              {/* <div className="chooseGrid">
                 <span>Choose grid type: </span>
                 <button onClick={() => this.chooseGrid(2)} className="chooseGridButton">2 x 2</button>
                 <button onClick={() => this.chooseGrid(4)} className="chooseGridButton">4 x 4</button>
                 <button onClick={() => this.chooseGrid(6)} className="chooseGridButton">6 x 6</button>
-              </div>
+              </div> */}
 
 
             </div>
+
+
             {/* ////////////////////////////// just game ///////////////////////////////////// */}
 
-            {/* {this.state.scoreList.map((score)=>{
-            return <div> <span>{score.key}</span><span>{score.sec}</span> </div> })
-            } */}
-
-
-            <ul >
-              {/* {scoresFromRender.map((item) => {
-                return <li >{item}</li>
-              })} */}
-
-            </ul>
-            <button onClick={this.showScoreList}>scores</button>
-
+              
+                {/* /////////////////// score list /////////////// */}
+                  <Scores  
+                  showScore = {this.showScore}
+                  scoreList = {this.state.scoreList}
+                  showScoreListIsOn = {this.state.showScoreList}
+                  />
+             
+          
             {this.state.shownGame ?
 
               <div className="wrapperForGame">
@@ -390,8 +354,6 @@ class App extends Component {
 
             <button className="goBackButton" onClick={this.goToLogPage}>Go back</button>
 
-
-
           </div>
 
         ) : null}
@@ -402,21 +364,21 @@ class App extends Component {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////// Card component //////////////////////////////////////////////////////
-function Card(props) {
-  return (
-    <button
-      className="grid-item"
-      disabled={props.opened}
-      style={{ backgroundColor: props.opened ? "rgb(0, 204, 153)" : "rgb(255, 102, 102)", pointerEvents: null }}
-      onClick={() => props.onCardClick(props.obj)}
-    >
-      <div style={{ visibility: props.opened ? "visible" : "hidden" }}>
-        {" "}
-        {props.val}
-      </div>
-    </button>
-  );
-}
+// function Card(props) {
+//   return (
+//     <button
+//       className="grid-item"
+//       disabled={props.opened}
+//       style={{ backgroundColor: props.opened ? "rgb(0, 204, 153)" : "rgb(255, 102, 102)", pointerEvents: null }}
+//       onClick={() => props.onCardClick(props.obj)}
+//     >
+//       <div style={{ visibility: props.opened ? "visible" : "hidden" }}>
+//         {" "}
+//         {props.val}
+//       </div>
+//     </button>
+//   );
+// }
 
 
 
