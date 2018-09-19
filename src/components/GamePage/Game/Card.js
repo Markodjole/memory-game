@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-function Card(props) {
+const Card = (props) => {
     return (
       <button
         className="grid-item"

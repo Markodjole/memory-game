@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 // import logo from './logo.svg';
 import "./App.css";
-import Card from './components/Card';
-import Scores from './components/Scores';
-import ChooseGrid from './components/ChooseGrid';
+import GamePage from './components/GamePage/GamePage';
+import Log from './components/LogPage/Log';
 
 class App extends Component {
   constructor(props) {
@@ -35,38 +34,8 @@ class App extends Component {
   }
 
 
-  /////////////////////// grid content making function //////////////////////////////////////////////
-  chooseGrid = (n) => {
 
-    let ar = [];
-    let newObj = { val: 0, opened: false, id: 0, pair: 0 };;
-    for (let i = 1; i <= n * n; i++) {
-      ar.push({ val: 0, opened: false, id: 0, pair: 0 });
-    };
-    let newAr = ar.map((card, ind) => {
 
-      if (ind % 2 === 0) {
-        if (ind == 0) { ind = 1 };
-        newObj = { val: newObj.val + 10, opened: false, id: newObj.id + 1, pair: newObj.pair + 1 };
-        return Object.assign({}, newObj);
-      } else {
-        newObj.id = newObj.id + 1;
-        return Object.assign({}, newObj);
-      }
-
-    });
-    let gridCol = () => {
-      let gridC = '';
-      for (let i = 0; i < n; i++) {
-        gridC += "auto ";
-      }
-      console.log(gridC)
-      return gridC;
-    }
-    console.log(gridCol());
-    this.setState({ cards: newAr, gridColumns: gridCol(), shownGame: true }, () => this.shafleCards());
-
-  }
   //////////////////////////////// shafle cards ////////////////////////////////////////////////////////////
   shafleCards = () => {
     this.clearStopwatch();
@@ -140,8 +109,52 @@ class App extends Component {
 
   }
 
-  showScore = (scores) => this.setState({ scoreList: scores, showScoreList: !this.state.showScoreList, shownGame: false});
 
+  showScore = () => {
+    let scoresFromLocal = localStorage.getItem("scores");
+    scoresFromLocal = scoresFromLocal ? scoresFromLocal.split(',') : [];
+    let arObj = () => {
+      let ar = [];
+      for(let i=0; i<scoresFromLocal.length; i=i+2){
+        ar.push(Object.assign({}, {id: i ,pName: scoresFromLocal[i], sec:scoresFromLocal[i+1]}))
+      }
+      return ar.sort((a,b) => (a.sec > b.sec) ? 1 : ((b.sec > a.sec) ? -1 : 0));
+    }
+    
+    this.setState({ scoreList: arObj(), showScoreList: !this.state.showScoreList, shownGame: false})
+  }
+
+  chooseGrid = (n) => {
+
+    let ar = [];
+    let newObj = { val: 0, opened: false, id: 0, pair: 0 };;
+    for (let i = 1; i <= n * n; i++) {
+      ar.push({ val: 0, opened: false, id: 0, pair: 0 });
+    };
+    let newAr = ar.map((card, ind) => {
+
+      if (ind % 2 === 0) {
+        if (ind == 0) { ind = 1 };
+        newObj = { val: newObj.val + 10, opened: false, id: newObj.id + 1, pair: newObj.pair + 1 };
+        return Object.assign({}, newObj);
+      } else {
+        newObj.id = newObj.id + 1;
+        return Object.assign({}, newObj);
+      }
+
+    });
+    let gridCol = () => {
+      let gridC = '';
+      for (let i = 0; i < n; i++) {
+        gridC += "auto ";
+      }
+      
+      return gridC;
+    }
+    console.log(gridCol());
+    this.setState({ cards: newAr, gridColumns: gridCol(), shownGame: true }, () => this.shafleCards());
+
+  }
   
 
 
@@ -254,7 +267,7 @@ class App extends Component {
   };
 
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// render //////////////////////////////////////////////////////////////
 
   render() {
@@ -262,124 +275,43 @@ class App extends Component {
   
     return (
       <div>
-        {/* //////////////////////////  log page ///////////////////////////////////////////////// */}
+{/* ////////////////////////////////////////////  log page //////////////////////////////////////////////////////////////////////////// */}
         {this.state.logPage ? (
-          <div className="welcome">
-            <p>Welcome to memory game</p>
-            <input className="logInput"
-              onChange={this.playerNameInInput}
-              placeholder="Player name"
-              type="text"
-              required
-            />
-            <br />
-            <button disabled={!this.state.playerNameInInput} onClick={this.handleStartGameClick} className="startButton">
-              Start game
-            </button>
-          </div>
+         
+         <Log 
+         onPlayerNameInInput={this.playerNameInInput}
+         onHandleStartGameClick={this.handleStartGameClick}
+         playerNameInInput={this.state.playerNameInInput}
+         />
+         
         ) : null}
-
-        {/*/////////////////////////////// game page ///////////////////////////////////////////////////////////// */}
+{/*/////////////////////////////////////////////// game page ////////////////////////////////////////////////////////////////////////// */}
         {this.state.gamePage ? (
-          <div className="wrapperForGamePage">
-            <div className="headerClass">
-              <h3>MEMORY CARD GAME</h3>
-              <p>Player name: {this.state.playerName.toUpperCase()}</p>
 
-              {/* //////////////////// choose grid ///////////// */}
-
-              <ChooseGrid
-              onChooseGrid = {this.chooseGrid}
-              />
-              {/* <div className="chooseGrid">
-                <span>Choose grid type: </span>
-                <button onClick={() => this.chooseGrid(2)} className="chooseGridButton">2 x 2</button>
-                <button onClick={() => this.chooseGrid(4)} className="chooseGridButton">4 x 4</button>
-                <button onClick={() => this.chooseGrid(6)} className="chooseGridButton">6 x 6</button>
-              </div> */}
-
-
-            </div>
-
-
-            {/* ////////////////////////////// just game ///////////////////////////////////// */}
-
-              
-                {/* /////////////////// score list /////////////// */}
-                  <Scores  
-                  showScore = {this.showScore}
-                  scoreList = {this.state.scoreList}
-                  showScoreListIsOn = {this.state.showScoreList}
-                  />
-             
+          <GamePage 
+          chooseGrid = {this.chooseGrid}
+          showScore = {this.showScore}
+          scoreList = {this.state.scoreList}
+          showScoreListIsOn = {this.state.showScoreList}
+          totalClicks={this.state.totalClicks}
+          time={this.state.time}
+          timeRestult={this.state.timeResult}
+          gridColumns={this.state.gridColumns}
+          cards={this.state.cards}
+          shafleCards={this.shafleCards}
+          isGameFinished={this.isGameFinished()}
+          handleCardClick={this.handleCardClick}
+          goToLogPage={this.goToLogPage}
+          playerName={this.state.playerName}
+          shownGame={this.state.shownGame}
+          />
           
-            {this.state.shownGame ?
-
-              <div className="wrapperForGame">
-                <div className="totalClicks">
-                  <p>Total clicks: {this.state.totalClicks}</p>
-                  <p>Time: {this.state.time < 1 ? this.state.timeResult : this.state.time} s</p>
-                </div>
-
-
-
-                <div className="grid-container"
-                  style={{ gridTemplateColumns: this.state.gridColumns }}
-                >
-                  {cards.map(card => {
-                    return (
-                      <Card
-                        val={card.val}
-                        key={card.id}
-                        id={card.id}
-                        onCardClick={this.handleCardClick}
-                        opened={card.opened}
-                        totalClicks={this.totalClicks}
-                        obj={card}
-                        finishedGame={this.state.finishedGame}
-                      />
-                    );
-                  })}
-                </div>
-                <div><button className="shafleCardsButton" onClick={this.shafleCards}
-                >Start new game</button></div>
-                {this.isGameFinished() ? (
-                  <p className="gameOver">Game over, well done! You did it in {this.state.totalClicks} clicks !</p>
-                ) : null}
-              </div>
-              : null
-            }
-
-            {/* /////////////////////////////////////////////////////////////////////////////////////////////////// */}
-
-            <button className="goBackButton" onClick={this.goToLogPage}>Go back</button>
-
-          </div>
 
         ) : null}
       </div>
     );
   }
 }
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////// Card component //////////////////////////////////////////////////////
-// function Card(props) {
-//   return (
-//     <button
-//       className="grid-item"
-//       disabled={props.opened}
-//       style={{ backgroundColor: props.opened ? "rgb(0, 204, 153)" : "rgb(255, 102, 102)", pointerEvents: null }}
-//       onClick={() => props.onCardClick(props.obj)}
-//     >
-//       <div style={{ visibility: props.opened ? "visible" : "hidden" }}>
-//         {" "}
-//         {props.val}
-//       </div>
-//     </button>
-//   );
-// }
-
 
 
 export default App;
