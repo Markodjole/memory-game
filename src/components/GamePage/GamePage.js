@@ -2,53 +2,56 @@ import React, { Component } from 'react';
 import Game from './Game/Game';
 import ChooseGrid from './ChooseGrid/ChooseGrid';
 import Scores from './Scores/Scores';
+import { Link } from 'react-router-dom';
 
 const GamePage = (props) => {
 
-    return (
-        <div className="wrapperForGamePage">
-            <div className="headerClass">
-              <h3>MEMORY CARD GAME</h3>
-              <p>Player name: {props.playerName.toUpperCase()}</p>
+  return (
+    <div className="wrapperForGamePage">
+      <div className="headerClass">
+        <h3>MEMORY CARD GAME</h3>
+        <p>Player name: {props.playerName.toUpperCase()}</p>
 
-              {/* /////////////////////////////// choose grid ///////////////////////////// */}
+        {/* /////////////////////////////// choose grid ///////////////////////////// */}
 
-                <ChooseGrid
-                chooseGrid = {props.chooseGrid}
-                />
-              </div>
+        <ChooseGrid
+          chooseGrid={props.chooseGrid}
+        />
+      </div>
 
-              
-                {/* ///////////////////////////////// score list /////////////////////////////// */}
-                  <Scores  
-                  showScore = {props.showScore}
-                  scoreList = {props.scoreList}
-                  showScoreListIsOn = {props.showScoreListIsOn}
-                  />
-             
-                {/* //////////////////////////////////// game //////////////////////////////////////// */}
-            {props.shownGame ?
 
-                <Game 
-                  totalClicks={props.totalClicks}
-                  time={props.time}
-                  timeRestult={props.timeResult}
-                  gridColumns={props.gridColumns}
-                  cards={props.cards}
-                  shafleCards={props.shafleCards}
-                  isGameFinished={props.isGameFinished}
-                  handleCardClick={props.handleCardClick}
-                />
-              
-              : null
-            }
+      {/* ///////////////////////////////// score list /////////////////////////////// */}
+      <Scores
+        showScore={props.showScore}
+        scoreList={props.scoreList}
+        showScoreListIsOn={props.showScoreListIsOn}
+      />
 
-    {/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+      {/* //////////////////////////////////// game //////////////////////////////////////// */}
+      {props.shownGame ?
 
-            <button className="goBackButton" onClick={props.goToLogPage}>Go back</button>
+        <Game
+          totalClicks={props.totalClicks}
+          time={props.time}
+          timeRestult={props.timeResult}
+          gridColumns={props.gridColumns}
+          cards={props.cards}
+          shafleCards={props.shafleCards}
+          isGameFinished={props.isGameFinished}
+          handleCardClick={props.handleCardClick}
+        />
 
-          </div>
-    )
+        : null
+      }
+
+      {/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
+      <button className="goBackButton" onClick={props.goToLogPage}>
+        <Link to='/'>Go back</Link>
+      </button>
+
+    </div>
+  )
 }
 
-export default GamePage ;
+export default GamePage;

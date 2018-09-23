@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import "./App.css";
 import GamePage from './components/GamePage/GamePage';
 import Log from './components/LogPage/Log';
+import { Route, Switch } from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
@@ -115,13 +116,13 @@ class App extends Component {
     scoresFromLocal = scoresFromLocal ? scoresFromLocal.split(',') : [];
     let arObj = () => {
       let ar = [];
-      for(let i=0; i<scoresFromLocal.length; i=i+2){
-        ar.push(Object.assign({}, {id: i ,pName: scoresFromLocal[i], sec:scoresFromLocal[i+1]}))
+      for (let i = 0; i < scoresFromLocal.length; i = i + 2) {
+        ar.push(Object.assign({}, { id: i, pName: scoresFromLocal[i], sec: scoresFromLocal[i + 1] }))
       }
-      return ar.sort((a,b) => (a.sec > b.sec) ? 1 : ((b.sec > a.sec) ? -1 : 0));
+      return ar.sort((a, b) => (a.sec > b.sec) ? 1 : ((b.sec > a.sec) ? -1 : 0));
     }
-    
-    this.setState({ scoreList: arObj(), showScoreList: !this.state.showScoreList, shownGame: false})
+
+    this.setState({ scoreList: arObj(), showScoreList: !this.state.showScoreList, shownGame: false })
   }
 
   chooseGrid = (n) => {
@@ -148,14 +149,14 @@ class App extends Component {
       for (let i = 0; i < n; i++) {
         gridC += "auto ";
       }
-      
+
       return gridC;
     }
     console.log(gridCol());
     this.setState({ cards: newAr, gridColumns: gridCol(), shownGame: true }, () => this.shafleCards());
 
   }
-  
+
 
 
   //////////////////////////////////////////// handle card click ////////////////////////////////////////////////////////////////
@@ -267,47 +268,56 @@ class App extends Component {
   };
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// render //////////////////////////////////////////////////////////////
 
   render() {
     let cards = this.state.cards;
-  
+
     return (
       <div>
-{/* ////////////////////////////////////////////  log page //////////////////////////////////////////////////////////////////////////// */}
-        {this.state.logPage ? (
-         
-         <Log 
-         onPlayerNameInInput={this.playerNameInInput}
-         onHandleStartGameClick={this.handleStartGameClick}
-         playerNameInInput={this.state.playerNameInInput}
-         />
-         
-        ) : null}
-{/*/////////////////////////////////////////////// game page ////////////////////////////////////////////////////////////////////////// */}
-        {this.state.gamePage ? (
 
-          <GamePage 
-          chooseGrid = {this.chooseGrid}
-          showScore = {this.showScore}
-          scoreList = {this.state.scoreList}
-          showScoreListIsOn = {this.state.showScoreList}
-          totalClicks={this.state.totalClicks}
-          time={this.state.time}
-          timeRestult={this.state.timeResult}
-          gridColumns={this.state.gridColumns}
-          cards={this.state.cards}
-          shafleCards={this.shafleCards}
-          isGameFinished={this.isGameFinished()}
-          handleCardClick={this.handleCardClick}
-          goToLogPage={this.goToLogPage}
-          playerName={this.state.playerName}
-          shownGame={this.state.shownGame}
+        {/* ////////////////////////////////////////////  log page //////////////////////////////////////////////////////////////////////////// */}
+        <Route exact path="/" render={() => (
+          <Log
+            onPlayerNameInInput={this.playerNameInInput}
+            onHandleStartGameClick={this.handleStartGameClick}
+            playerNameInInput={this.state.playerNameInInput}
           />
-          
+        )} />
+        {/*/////////////////////////////////////////////// game page ////////////////////////////////////////////////////////////////////////// */}
+        <Route path="/game-page" render={() => (
+          <GamePage
+            chooseGrid={this.chooseGrid}
+            showScore={this.showScore}
+            scoreList={this.state.scoreList}
+            showScoreListIsOn={this.state.showScoreList}
+            totalClicks={this.state.totalClicks}
+            time={this.state.time}
+            timeRestult={this.state.timeResult}
+            gridColumns={this.state.gridColumns}
+            cards={this.state.cards}
+            shafleCards={this.shafleCards}
+            isGameFinished={this.isGameFinished()}
+            handleCardClick={this.handleCardClick}
+            goToLogPage={this.goToLogPage}
+            playerName={this.state.playerName}
+            shownGame={this.state.shownGame}
+          />
+        )} />
 
-        ) : null}
+
+        {/* {this.state.logPage ? ( */}
+
+
+
+        {/* ) : null} */}
+        {/* {this.state.gamePage ? ( */}
+
+
+
+
+        {/* ) : null} */}
       </div>
     );
   }
