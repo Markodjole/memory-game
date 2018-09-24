@@ -15,6 +15,7 @@ body {
   background-color: rgb(255, 102, 102);
   margin-top:20px;
   border-radius: 7px;
+  width: 150px;
 }
 .startButton:hover {
   color:white;
@@ -22,6 +23,10 @@ body {
   background-color: rgb(255, 128, 128);
   margin-top:20px;
   border-radius: 7px;
+}
+.navLink {
+  color: white;
+  text-decoration: none;
 }
 .shafleCardsButton{
   width:150px;

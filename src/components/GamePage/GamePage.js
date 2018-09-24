@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Game from './Game/Game';
 import ChooseGrid from './ChooseGrid/ChooseGrid';
 import Scores from './Scores/Scores';
-import { Link } from 'react-router-dom';
+import { Route, Link, Switch } from 'react-router-dom';
 
 const GamePage = (props) => {
-
+ 
   return (
     <div className="wrapperForGamePage">
       <div className="headerClass">
@@ -20,16 +20,24 @@ const GamePage = (props) => {
       </div>
 
 
+    <Link to="/game-page/scores" className="navLink"><button className="goBackButton" onClick={() => props.showScore()}>scores</button></Link>
+
+    <Switch>
       {/* ///////////////////////////////// score list /////////////////////////////// */}
-      <Scores
-        showScore={props.showScore}
-        scoreList={props.scoreList}
-        showScoreListIsOn={props.showScoreListIsOn}
-      />
+
+      
+      <Route path="/game-page/scores" render={() => (
+          <Scores
+          showScore={props.showScore}
+          scoreList={props.scoreList}
+          showScoreListIsOn={props.showScoreListIsOn}
+        />
+        )} />
+      
 
       {/* //////////////////////////////////// game //////////////////////////////////////// */}
-      {props.shownGame ?
-
+      {/* {props.shownGame ? */}
+      <Route path="/game-page/game" render={() => (
         <Game
           totalClicks={props.totalClicks}
           time={props.time}
@@ -39,17 +47,22 @@ const GamePage = (props) => {
           shafleCards={props.shafleCards}
           isGameFinished={props.isGameFinished}
           handleCardClick={props.handleCardClick}
+          shownGame={props.shownGame}
         />
+        )} />
+        {/* : null */}
+      {/* } */}
+    </Switch>
 
-        : null
-      }
+      
 
       {/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
+      <Link to='/' className="navLink">
       <button className="goBackButton" onClick={props.goToLogPage}>
-        <Link to='/'>Go back</Link>
+        Go back
       </button>
-
+      </Link>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 
 const Log = (props) => {
@@ -14,9 +14,19 @@ const Log = (props) => {
         required
       />
       <br />
-      <button disabled={!props.playerNameInInput} onClick={props.onHandleStartGameClick} className="startButton">
-        <Link to='/game-page' >Start game</Link>
-      </button>
+      
+        {props.playerNameInInput ? <NavLink  to='/game-page' className="navLink">
+        <button disabled={!props.playerNameInInput} onClick={props.onHandleStartGameClick} className="startButton">
+        Play game
+        </button>
+        </NavLink> 
+        :
+        <button disabled={!props.playerNameInInput} onClick={props.onHandleStartGameClick} className="startButton">
+        Write your name
+        </button>
+        }
+        
+      
     </div>
   )
 }

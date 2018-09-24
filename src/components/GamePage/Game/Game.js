@@ -6,7 +6,9 @@ const Game = (props) => {
 
   return (
     <div className="wrapperForGame">
-      <div className="totalClicks">
+    {!props.shownGame ? null : 
+    <div>
+    <div className="totalClicks">
         <p>Total clicks: {props.totalClicks}</p>
         <p>Time: {props.time < 1 ? props.timeResult : props.time} s</p>
       </div>
@@ -35,7 +37,12 @@ const Game = (props) => {
         <p className="gameOver">Game over, well done! You did it in {props.totalClicks} clicks !</p>
       ) : null}
     </div>
+    }
+      
+    </div>
   )
+
+
 }
 
 export default Game;

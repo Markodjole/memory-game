@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import "./App.css";
 import GamePage from './components/GamePage/GamePage';
 import Log from './components/LogPage/Log';
+import Error from './components/Error';
 import { Route, Switch } from 'react-router-dom';
 
 class App extends Component {
@@ -273,10 +274,11 @@ class App extends Component {
 
   render() {
     let cards = this.state.cards;
+    
 
     return (
       <div>
-
+      <Switch>
         {/* ////////////////////////////////////////////  log page //////////////////////////////////////////////////////////////////////////// */}
         <Route exact path="/" render={() => (
           <Log
@@ -305,7 +307,8 @@ class App extends Component {
             shownGame={this.state.shownGame}
           />
         )} />
-
+        <Route component={Error} />
+        </Switch>
 
         {/* {this.state.logPage ? ( */}
 
