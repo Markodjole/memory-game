@@ -288,7 +288,7 @@ class App extends Component {
           />
         )} />
         {/*/////////////////////////////////////////////// game page ////////////////////////////////////////////////////////////////////////// */}
-        <Route path="/game-page" render={() => (
+        <Route path="/game-page" render={(match) => (
           <GamePage
             chooseGrid={this.chooseGrid}
             showScore={this.showScore}
@@ -305,6 +305,9 @@ class App extends Component {
             goToLogPage={this.goToLogPage}
             playerName={this.state.playerName}
             shownGame={this.state.shownGame}
+            
+            
+            testMatch={match}
           />
         )} />
         <Route component={Error} />

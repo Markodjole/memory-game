@@ -6,6 +6,8 @@ import { Route, Link, Switch } from 'react-router-dom';
 
 const GamePage = (props) => {
  
+  console.log(props.testMatch)
+
   return (
     <div className="wrapperForGamePage">
       <div className="headerClass">
