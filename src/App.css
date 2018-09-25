@@ -49,41 +49,36 @@ body {
   display: inline-grid;
   background-color: rgb(79, 190, 228);
   padding: 10px;
-  grid-gap: 5px;
   margin-top: 7px;
   border-radius: 7px;
 }
 .grid-item {
-  background-color: rgba(255, 255, 255, 0.8);
+  /* background-color: rgba(255, 255, 255, 0.8); */
   border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  font-size: 30px;
   text-align: center;
   border-radius: 7px;
+  background-size: 100px 150px;
 }
 
 .totalClicks{
   width: 150px;
-  background-color: rgb(79, 190, 228);
   margin:auto;
-  padding:2px;
   border-radius: 7px;
+  font-size: 14px;
 }
 .wrapperForGamePage{
   width:90%;
   margin:auto;
   margin-top:10px;
   text-align: center;
-  padding: 30px;
+  padding: 5px;
   background-color: rgb(28, 139, 176);
   border: 1px solid white;
 }
 .wrapperForGame{
   width:70%;
   margin:auto;
-  margin-top: 10px;
   text-align: center;
-  padding: 10px;
   background-color: rgb(28, 139, 176);
 }
 .chooseGridButton {
@@ -92,7 +87,7 @@ body {
   padding:10px;
   background-color: rgb(28, 139, 176);
   margin:4px;
-  margin-top:20px;
+  margin-top:5px;
   border-radius: 7px;
 }
 
@@ -111,4 +106,7 @@ body {
 }
 .logInput{
   padding: 5px;
+}
+.cardImg {
+  max-width: 100px;
 }

@@ -129,18 +129,23 @@ class App extends Component {
   chooseGrid = (n) => {
 
     let ar = [];
-    let newObj = { val: 0, opened: false, id: 0, pair: 0 };;
+    let newObj = { val: 0, color: 0, opened: false, id: 0, pair: 0 };;
     for (let i = 1; i <= n * n; i++) {
-      ar.push({ val: 0, opened: false, id: 0, pair: 0 });
+      ar.push({ val: 0, color: 0, opened: false, id: 0, pair: 0 });
     };
     let newAr = ar.map((card, ind) => {
 
       if (ind % 2 === 0) {
         if (ind == 0) { ind = 1 };
-        newObj = { val: newObj.val + 10, opened: false, id: newObj.id + 1, pair: newObj.pair + 1 };
+        if(ind % 4 === 0){
+        newObj = { val: newObj.val, color: 1, opened: false, id: newObj.id + 1, pair: newObj.pair + 1 };
+        return Object.assign({}, newObj);
+        }
+        newObj = { val: newObj.val + 1, color: newObj.color + 1, opened: false, id: newObj.id + 1, pair: newObj.pair + 1 };
         return Object.assign({}, newObj);
       } else {
         newObj.id = newObj.id + 1;
+        newObj.color = newObj.color + 1;
         return Object.assign({}, newObj);
       }
 

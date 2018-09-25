@@ -9,8 +9,8 @@ const Game = (props) => {
     {/* {!props.shownGame ? null :  */}
     <div>
     <div className="totalClicks">
-        <p>Total clicks: {props.totalClicks}</p>
-        <p>Time: {props.time < 1 ? props.timeResult : props.time} s</p>
+        <span>Total clicks: {props.totalClicks}</span><br/>
+        <span>Time: {props.time < 1 ? props.timeResult : props.time} s</span>
       </div>
 
 
