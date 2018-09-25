@@ -6,7 +6,7 @@ const Scores = (props) => {
         <div>
             {/* <button className="goBackButton" onClick={() => props.showScore()}>scores</button> */}
 
-            {/* {props.showScoreListIsOn ? ( */}
+            {props.showScoreListIsOn ? (
             <div className="scores">
                  <h3>Top scores :</h3>
                  <ul className="scoreList">
@@ -15,8 +15,8 @@ const Scores = (props) => {
                    })}
                  </ul>
              </div>
-             {/* )  */}
-         {/* : null} */}
+             ) 
+          : null} 
            
         </div>
          );

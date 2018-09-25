@@ -6,7 +6,7 @@ const Game = (props) => {
 
   return (
     <div className="wrapperForGame">
-    {!props.shownGame ? null : 
+    {/* {!props.shownGame ? null :  */}
     <div>
     <div className="totalClicks">
         <p>Total clicks: {props.totalClicks}</p>
@@ -37,7 +37,7 @@ const Game = (props) => {
         <p className="gameOver">Game over, well done! You did it in {props.totalClicks} clicks !</p>
       ) : null}
     </div>
-    }
+    {/* } */}
       
     </div>
   )
